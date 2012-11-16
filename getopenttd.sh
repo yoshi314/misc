@@ -15,7 +15,7 @@ wget -c http://binaries.openttd.org/releases/${version}/openttd-${version}-linux
 
 wget -c http://binaries.openttd.org/extra/opengfx/${gfxver}/opengfx-${gfxver}-all.zip
 
-mkdir -p openttd/usr/local/openttd
+mkdir -p openttd/usr/local/openttd/data
 
 tar xvzpf openttd-${version}-linux-generic-i686.tar.gz --strip-components=1 -C openttd/usr/local/openttd
 unzip opengfx-${gfxver}-all.zip
@@ -35,3 +35,6 @@ sed -i -e 's|\(Exec=\).*|\1/usr/local/openttd/openttd|g' openttd/usr/local/share
 [ -e "openttd.tcz" ] && rm openttd.tcz
 mksquashfs openttd openttd.tcz -force-uid 1001 -force-gid 50
 md5sum openttd.tcz > openttd.tcz.md5.txt
+
+
+echo -e "SDL.tcz\nexpat2.tcz\nbzip2-lib.tcz\nfontconfig.tcz" > openttd.tcz.dep
