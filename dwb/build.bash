@@ -8,6 +8,7 @@ else
     cd dwb
     hg pull
     hg update
+    cd ${builddir}
 fi
 
 mkdir build-dwb
@@ -21,10 +22,11 @@ cp tools/grab_adblocker ${builddir}/build-dwb/usr/local/bin/dwb_grab_adblocker.b
 
 cd ${builddir}
 
+rm dwb.tcz
 mksquashfs build-dwb dwb.tcz
 
 ../commonscripts/findlibs.bash build-dwb/usr/local/bin/dwb | xargs ../commonscripts/reducedeps.bash > dwb.tcz.dep.tmp
 ../commonscripts/findlibs.bash build-dwb/usr/local/bin/dwbem | xargs ../commonscripts/reducedeps.bash >> dwb.tcz.dep.tmp
 
-uniq -u dwb.tcz.dep.tmp > dwb.tcz.dep
+sort dwb.tcz.dep.tmp | uniq -u > dwb.tcz.dep
 rm dwb.tcz.dep.tmp
