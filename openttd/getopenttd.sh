@@ -4,6 +4,9 @@ builddir=${PWD}
 
 #required
 #lzo2-dev
+#xz-dev
+#SDL-dev
+#SDL_gfx-dev
 
 rm versions.txt
 wget http://finger.openttd.org/versions.txt
@@ -29,8 +32,8 @@ cd openttd-${version}
     make INSTALL_DIR=${builddir}/openttd install
 cd ${builddir}
 
-
-mv opengfx-${gfxver}/* openttd/usr/local/share/openttd
+mkdir openttd/usr/local/share/openttd/data
+mv opengfx-${gfxver}/* openttd/usr/local/share/openttd/data
 rm -rf opengfx-${gfxver}
 
 [ -e "openttd.tcz" ] && rm openttd.tcz
