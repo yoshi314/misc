@@ -78,7 +78,7 @@ cp zdoom/*.pk3 build-gtk/usr/local/share/zdoom
 rm zdoom.tcz
 mksquashfs build-gtk zdoom-gtk.tcz
 md5sum zdoom-gtk.tcz > zdoom-gtk.tcz.md5.txt
-./findlibs.bash build-gtk/usr/local/bin/zdoom | xargs ./reducedeps.bash > zdoom-gtk.tcz.dep
+../commonscripts/findlibs.bash build-gtk/usr/local/bin/zdoom | xargs ../commonscripts/reducedeps.bash > zdoom-gtk.tcz.dep
 
 # no-gtk
 cd zdoom
@@ -90,8 +90,8 @@ make clean
 # libXcursor dep can be omitted by using
 #     -DXCURSOR_HEADER="" -DXCURSOR_LIB="" \
 
-# this will remove xorg-libs package from deps (600kb)
-# not sure what this lib is used for in zdoom exactly
+# this will remove Xcursor from xorg-libs package from deps (600kb deps less)
+# not sure what this lib is used for in zdoom exactly. let's keep it for now
 
 cmake -DNO_GTK=ON \
     -DNASM_PATH=/usr/local/bin/nasm \
@@ -117,5 +117,5 @@ cp zdoom/*.pk3 build/usr/local/share/zdoom
 rm zdoom.tcz
 mksquashfs build zdoom.tcz
 md5sum zdoom.tcz > zdoom.tcz.md5.txt
-./findlibs.bash build/usr/local/bin/zdoom | xargs ./reducedeps.bash > zdoom.tcz.dep
+./commonscripts/findlibs.bash build/usr/local/bin/zdoom | xargs ../commonscripts/reducedeps.bash > zdoom.tcz.dep
 
