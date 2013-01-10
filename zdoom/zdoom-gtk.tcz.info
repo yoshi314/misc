@@ -1,4 +1,4 @@
-Title:          zdoom-nogtk.tcz
+Title:          zdoom-gtk.tcz
 Description:	ZDoom is an cross-plaform implementation of original Doom engine used in doom, doom2, hexen, heretic and other games.
 Version:        svn-20130103
 Author:         Zdoom team
@@ -9,9 +9,9 @@ Extension_by:   yoshi314 <yoshi314@gmail.com>
 Tags:zdoom game doom hexen heretic doom2 strife chex
 Comments:ZDoom is a software based doom engine. It does not use openGL, therefore it will only benefit from 2D acceleration mechanisms in your X server of choice.
 
-This is a GTK enabled build. It has a few extra dependencies compared to standard build.
+This is a version that depends on GTK libraries.
 
-To take advantage of 3D acceleration install gzdoom package instead.
+To take advantage of 3D acceleration install gzdoom package.
 
 This implementation covers nearly all doom-based games, and nearly all mods that came for them.
 
@@ -38,6 +38,10 @@ There is also support for several other standalone doom mods.
 
 Doom64 is unsupported (there is a separate project for it).
 
+----- The advantages of GTK version
+
+GTK version displays GTK based dialog when multiple valid IWAD files are detected. Therefore, there is no need to run zdoom from xterm/other terminal emulator in order to see the IWAD selection dialog.
+
 ----- Configuration 
 
 Game by default scans ~/.config/zdoom for IWAD files, but you can add custom search paths, or specify 
@@ -46,24 +50,17 @@ which IWAD or mod to load by passing it at the command line.
 When the game finds multiple valid WADs in its search directories, it will display a 
 prompt to let you select the game you want to play.
 
-In order to generate the initial config, simply run zdoom once. A config file ~/.config/zdoom/zdoom.ini will be created.
+In order to generate the initial config, simply run zdoom once. A config file ~/.config/zdoom/zdoom.ini will be created. 
+
 Also, you will get a short hints on where to place the IWAD files.
 
-All other options can be modified in-game from the menu, once you have at least one valid IWAD to launch zdoom with.
-
------ Differences betwen GTK and non-GTK version
-
-If the game finds multiple valid IWAD files, it will prompt you which game to play (if not specified by commandline parameters).
-Non-GTK build displays selection menu in text mode while GTK build displays a GTK-based dialog window. That is the only difference.
-
-GTK version requires some extra Xorg libraries (through GTK2), and its only advantage is graphical IWAD selection dialog on startup.
-
+All other options can be modified in-game from the menu, once you have at least one valid IWAD to run zdoom with.
 
 ----- Music playback
 In order to hear midi music from the game, you will have to provide a soundfont file for fluidsynth engine (and select fluidsynth as music engine in options).
-Search in tinycore apps for 'fluidsynth-soundfont' package.
+Search in tinycore apps for 'soundfont'.
 
-Lack of such file will not prevent zdoom from running. Additionally, there are music replacement mods with remastered audio in vorbis/mp3 format for most IWADs.
+Lack of such file will not prevent zdoom from running, also there are mods that replace music with remastered audio in *.ogg/*.mp3 format.
                 ----
                 Compiled for TC 4.x
                 ----

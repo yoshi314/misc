@@ -75,7 +75,7 @@ cp zdoom/zdoom build-gtk/usr/local/bin
 cp zdoom/libfmodex.so build-gtk/usr/local/lib
 cp zdoom/*.pk3 build-gtk/usr/local/share/zdoom
 
-rm zdoom.tcz
+rm zdoom-gtk.tcz
 mksquashfs build-gtk zdoom-gtk.tcz
 md5sum zdoom-gtk.tcz > zdoom-gtk.tcz.md5.txt
 ../commonscripts/findlibs.bash build-gtk/usr/local/bin/zdoom | xargs ../commonscripts/reducedeps.bash > zdoom-gtk.tcz.dep

@@ -38,6 +38,10 @@ There is also support for several other standalone doom mods.
 
 Doom64 is unsupported (there is a separate project for it).
 
+Note: if multiple valid IWAD files are detected, and you have not specified which one to use through command line parameters, zdoom will prompt you to select which game you want to play. This message is displayed to stdout, so run zdoom from terminal emulator of your choice (e.g. xterm).
+The GTK build (zdoom-gtk) displays a graphical dialog in this situation, and is otherwise functionally identical.
+
+
 ----- Configuration 
 
 Game by default scans ~/.config/zdoom for IWAD files, but you can add custom search paths, or specify 
@@ -51,14 +55,6 @@ In order to generate the initial config, simply run zdoom once. A config file ~/
 Also, you will get a short hints on where to place the IWAD files.
 
 All other options can be modified in-game from the menu, once you have at least one valid IWAD to run zdoom with.
-
------ Differences from GTK version
-
-If the game finds multiple valid IWAD files, it will prompt you which game to play. 
-Non-GTK build displays selection menu in text mode while GTK build displays a GTK-based dialog window. That is the only difference.
-
-GTK version requires some Xorg libraries (through GTK2), and its only advantage is graphical IWAD selection dialog on startup.
-
 
 ----- Music playback
 In order to hear midi music from the game, you will have to provide a soundfont file for fluidsynth engine (and select fluidsynth as music engine in options).
