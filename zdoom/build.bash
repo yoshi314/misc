@@ -117,5 +117,5 @@ cp zdoom/*.pk3 build/usr/local/share/zdoom
 rm zdoom.tcz
 mksquashfs build zdoom.tcz
 md5sum zdoom.tcz > zdoom.tcz.md5.txt
-./commonscripts/findlibs.bash build/usr/local/bin/zdoom | xargs ../commonscripts/reducedeps.bash > zdoom.tcz.dep
+../commonscripts/findlibs.bash build/usr/local/bin/zdoom | xargs ../commonscripts/reducedeps.bash > zdoom.tcz.dep
 
