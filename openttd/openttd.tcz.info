@@ -1,0 +1,29 @@
+Title:          openttd.tcz
+Description:	openTTD is a reimplenetation of transport tycoon deluxe
+Version:        1.2.3
+Author:         openTTD Team
+Original-site:  http://openttd.org
+Copying-policy: GPL v2
+Size:		9.5M
+Extension_by:   yoshi314 <yoshi314@gmail.com>
+Tags:openttd game ttd
+Comments:OpenTTD is a reimplementation of a classic game Transport Tycoon Deluxe.
+
+The package contains bare minimun required to run the game - only the graphical files are provided.
+In order to have sound effects, music or other addons, run the game and go into "online updates" menu.
+
+From there you can fetch SFX packs ( to have sound ) and music packs, as well as alternate graphics
+and additional scenarios. For music, you might require a midi engine ( timidity ).
+
+All addons will be stored in ~/.openttd, keep in mind that they quickly grow in size if you use many addons. 
+You might want to symlink that directory to a external storage device not to use up too much ram.
+
+A script is provided with the extension, to create most recent openTTD tcz from online openTTD binaries server. 
+To use it, copy /usr/local/bin/openttd-build-tcz.bash somewhere to your home directory and run it. The script requires bash to work.
+
+X server with 2D acceleration is recommended, but probably not required.
+                ----
+                Compiled for TC 4.x
+                ----
+Change-log:     2013/01/02 Version 1.2.3
+Current:        2013/01/02 Version 1.2.3
