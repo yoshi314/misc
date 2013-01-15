@@ -1,0 +1,68 @@
+Title:          darkplaces.tcz
+Description:	Darkplaces is an enhanced OpenGL implementation of Quake1 engine.
+Version:        20121222
+Author:         LordHavoc
+Original-site:  http://icculus.org/twilight/darkplaces
+Copying-policy: GPL v2
+Size:		
+Extension_by:   yoshi314 <yoshi314@gmail.com>
+Tags:zdoom game doom hexen heretic doom2 strife chex
+Comments:ZDoom is a software based doom engine. It does not use openGL, therefore it will only benefit from 2D acceleration mechanisms in your X server of choice.
+
+This is a version that does not depend on GTK libraries.
+
+To take advantage of 3D acceleration install gzdoom package.
+
+This implementation covers nearly all doom-based games, and nearly all mods that came for them.
+
+
+----- Running zdoom 
+Zdoom requires original game data files (commonly referred to as 'IWAD files') for at least one supported game.
+
+Those files are named *.wad and come with respective supported games. You can also use wad files from demo versions of those games,
+but that will make it impossible to run games with custom mods.
+
+IWAD files from following games are supported by zdoom : 
+
+- doom1      ( all versions, including the wad file from Doom 3 BFG edition )
+- doom2      ( same as doom1 )
+- hexen      ( all versions and mission packs )
+- heretic    ( similarily as hexen )
+- freedoom   ( probably all versions )
+- chex quest ( all versions )
+- strife     ( all versions )
+- HacX       ( unknown if there are multiple variants ) 
+
+
+There is also support for several other standalone doom mods.
+
+Doom64 is unsupported (there is a separate project for it).
+
+Note: if multiple valid IWAD files are detected, and you have not specified which one to use through command line parameters, zdoom will prompt you to select which game you want to play. This message is displayed to stdout, so run zdoom from terminal emulator of your choice (e.g. xterm).
+The GTK build (zdoom-gtk) displays a graphical dialog in this situation, and is otherwise functionally identical.
+
+
+----- Configuration 
+
+Game by default scans ~/.config/zdoom for IWAD files, but you can add custom search paths, or specify 
+which IWAD or mod to load by passing it at the command line.
+
+When the game finds multiple valid WADs in its search directories, it will display a 
+prompt to let you select the game you want to play.
+
+In order to generate the initial config, simply run zdoom once. A config file ~/.config/zdoom/zdoom.ini will be created. 
+
+Also, you will get a short hints on where to place the IWAD files.
+
+All other options can be modified in-game from the menu, once you have at least one valid IWAD to run zdoom with.
+
+----- Music playback
+In order to hear midi music from the game, you will have to provide a soundfont file for fluidsynth engine (and select fluidsynth as music engine in options).
+Search in tinycore apps for 'soundfont'.
+
+Lack of such file will not prevent zdoom from running, also there are mods that replace music with remastered audio in *.ogg/*.mp3 format.
+                ----
+                Compiled for TC 4.x
+                ----
+Change-log:     2013/01/02 Version 1.2.3
+Current:        2013/01/02 Version 1.2.3
