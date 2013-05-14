@@ -1,0 +1,26 @@
+### Ad Blocker in dwb
+
+In order to use adblock feature, you will need to provide dwb with block lists.
+
+To do so, copy the file /usr/local/bin/dwb_grab_adblocker.bash somewhere you can edit it,
+modify it to your liking and run it. 
+
+The script will fetch blocklists and convert them into format suitable for dwb.
+
+Follow the instructions displayed after the script has completed to enable adblocker functionality.
+
+### Extension manager
+
+Dwb comes with command dwbem which will fetch various extensions to the browser. 
+
+One of them is a script that will play flash videos through quvi with media player of your choice.
+
+### Known issues
+
+Note: if you are getting "SSL Handshake failed" messages on https websites,
+edit the file ~/.config/dwb/settings and add/alter the following line 
+
+ssl-use-system-ca-file=false
+
+Alternatively, you change this option from config menu available after typing in "Ss" command in dwb, or by going to "dwb:settings" address.
+
