@@ -1,0 +1,26 @@
+Title:          dwb.tcz
+Description:    dwb is a webkit based keyboard driven browser
+Version:        20130514
+Author:         portix
+Original-site:  http://portix.bitbucket.org/dwb
+Copying-policy: GPL v2
+Size:		600K
+Extension_by:   yoshi314 <yoshi314@gmail.com>
+Tags:		dwb webkit browser
+Comments:       dwb is a webkit-based, keyboard-driven browser. It can support user scripts and has an built-in advertisement blocker feature.
+
+For more information on additional features, refer to /usr/local/doc/dwb/readme file.
+
+Note: if you are getting "SSL Handshake failed" messages on https websites,
+edit the file ~/.config/dwb/settings and add/alter the following line 
+
+ssl-use-system-ca-file=false
+
+Alternatively, you change this option from config menu available after typing in "Ss" command in dwb, or by going to "dwb:settings" address.
+
+                ----
+                Compiled for TC 4.x
+                ----
+PPI Compatible
+Change-log:     2012/12/13 First build
+Current:        2012/12/13 First build
