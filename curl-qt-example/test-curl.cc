@@ -1,0 +1,46 @@
+#include <curl/curl.h>
+#include <Qt/qstring.h>
+#include <iostream>
+
+QString data;
+
+size_t readData( char *ptr, size_t size, size_t nmemb, void *userdata) {
+
+	//haven't yet figured out how to pass to *userdata without losing the pointer. ho hum.
+	//this is a viable workaround
+
+	data = QString( static_cast<char*>( ptr ) );
+
+	return size*nmemb;
+};
+
+int main()
+{
+	curl_global_init( CURL_GLOBAL_ALL );
+	CURL * myHandle;
+	
+	CURLcode result; // We’ll store the result of CURL’s webpage retrieval, for simple error checking.
+	myHandle = curl_easy_init ( ) ;
+	
+	// Notice the lack of major error checking, for brevity
+
+	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds");
+
+	curl_easy_setopt(myHandle, CURLOPT_WRITEFUNCTION, readData);
+
+	curl_easy_setopt(myHandle, CURLOPT_WRITEDATA, &data);
+	
+	result = curl_easy_perform( myHandle );
+
+
+	curl_easy_cleanup( myHandle );
+	
+	std::cout << data.toStdString() << std::endl;
+		
+	
+	return 0;
+}
+
+
+
+
