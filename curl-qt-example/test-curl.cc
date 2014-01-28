@@ -1,5 +1,6 @@
 #include <curl/curl.h>
 #include <Qt/qstring.h>
+#include <Qt/qxmlstream.h>
 #include <iostream>
 
 QString data;
@@ -36,6 +37,20 @@ int main()
 	curl_easy_cleanup( myHandle );
 	
 	std::cout << data.toStdString() << std::endl;
+
+	//try to get through xml
+
+	if (!data.isEmpty()) {
+		QXmlStreamReader xmlReader(data);
+
+		QXmlStreamReader::TokenType token;
+
+		while ((token = xmlReader.readNext()) != QXmlStreamReader::Invalid) {
+			printf(" token ...\n");
+		}
+			
+	}	
+	
 		
 	
 	return 0;
