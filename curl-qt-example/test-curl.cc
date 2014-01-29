@@ -45,11 +45,22 @@ int main()
 
 		QXmlStreamReader::TokenType token;
 
+
 		while ((token = xmlReader.readNext()) != QXmlStreamReader::Invalid) {
-			printf(" token ...\n");
+
+			if (xmlReader.name().toString() == "link") {
+				QXmlStreamAttributes attributes = xmlReader.attributes();
+				QString url = attributes.value("href").toString();
+				QString type = attributes.value("type").toString();
+
+				std::cout 	<< " url " 
+						<< url.toStdString() 
+						<< " type " << type.toStdString() << std::endl;
+			}
 		}
+	}
 			
-	}	
+		
 	
 		
 	
