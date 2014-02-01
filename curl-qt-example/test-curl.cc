@@ -53,16 +53,20 @@ int main()
 				QString url = attributes.value("href").toString();
 				QString type = attributes.value("type").toString();
 
-				std::cout 	<< " url " 
+				if (!url.isEmpty()) {
+
+					std::cout 	<< " url " 
 						<< url.toStdString() 
-						<< " type " << type.toStdString() << std::endl;
+						<< " type " 
+						<< type.toStdString() << std::endl;
+
+					std::cout 	<< " name "
+						<< xmlReader.name().toString().toStdString() 
+						<< std::endl;
+				}
 			}
 		}
 	}
-			
-		
-	
-		
 	
 	return 0;
 }
