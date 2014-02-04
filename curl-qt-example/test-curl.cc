@@ -41,15 +41,16 @@ int main()
 	//try to get through xml
 
 	if (!data.isEmpty()) {
-		QXmlStreamReader xmlReader(data);
+		QXmlStreamReader xml(data);
 
 		QXmlStreamReader::TokenType token;
 
 
-		while ((token = xmlReader.readNext()) != QXmlStreamReader::Invalid) {
+		while ((token = xml.readNext()) != QXmlStreamReader::Invalid) {
 
-			if (xmlReader.name().toString() == "link") {
-				QXmlStreamAttributes attributes = xmlReader.attributes();
+			if (xml.name().toString() == "link") {
+				printf(" >> link \n");
+				QXmlStreamAttributes attributes = xml.attributes();
 				QString url = attributes.value("href").toString();
 				QString type = attributes.value("type").toString();
 
@@ -57,14 +58,39 @@ int main()
 
 					std::cout 	<< " url " 
 						<< url.toStdString() 
+						<< std::endl 
 						<< " type " 
 						<< type.toStdString() << std::endl;
 
 					std::cout 	<< " name "
-						<< xmlReader.name().toString().toStdString() 
+						<< xml.name().toString().toStdString() 
 						<< std::endl;
 				}
+				printf( " << link \n");
 			}
+
+			if (xml.name().toString() == "content" ) {
+				printf(" >> content \n");
+				QString elementName = xml.name().toString();
+				xml.readNext();
+				if(xml.tokenType() != QXmlStreamReader::Characters) {
+					printf(" not characters \n");
+					return 0;
+				}
+				
+				QString text = xml.text().toString();
+				
+				if (!text.isEmpty()) {
+
+					std::cout 
+						<< "  text : " 
+						<< text.toStdString() 
+						<< " x\n   "
+						<< std::endl;
+				}
+				printf(" << content \n");
+			}
+			printf(" next \n");
 		}
 	}
 	
