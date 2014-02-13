@@ -27,9 +27,18 @@ void readEntry(QXmlStreamReader &xml) {
 	while ((tmptoken = xml.readNext()) && xml.name() != "entry") {
 		QXmlStreamAttributes attributes = xml.attributes();
 
+		if (xml.name() == "title") {
+			xml.readNext();  //skip to text value
+			QString text = xml.text().toString();
+
+			if (!text.trimmed().isEmpty()) {
+				std::cout << "title : " 
+					<< text.toStdString() ;
+			}
+		}
+
 		if (xml.name() == "content" ) {
-			QString elementName = xml.name().toString();
-			xml.readNext();
+			xml.readNext();  //get to text value
 
 			if(xml.tokenType() != QXmlStreamReader::Characters) {
 				printf(" not characters \n");
@@ -38,7 +47,7 @@ void readEntry(QXmlStreamReader &xml) {
 			QString text = xml.text().toString();
 
 			if (!text.trimmed().isEmpty()) {
-				std::cout 
+				std::cout << " content : " 
 					<< text.toStdString() ;
 			}
 		}
@@ -48,7 +57,7 @@ void readEntry(QXmlStreamReader &xml) {
 
 			if (!url.isEmpty()) {
 				std::cout
-					<< " url " 
+					<< " url : " 
 					<< url.toStdString() ;
 			}
 			std::cout << std::endl;
@@ -67,7 +76,8 @@ int main()
 
 	// Notice the lack of major error checking, for brevity
 
-	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds");
+	//curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds");
+	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/navcatalog/4e736572696573");
 
 	curl_easy_setopt(myHandle, CURLOPT_WRITEFUNCTION, readData);
 
