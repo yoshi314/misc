@@ -120,6 +120,12 @@ int main()
 
 	result = curl_easy_perform( myHandle );
 
+	if (result) { 
+		//process curl error
+		QString errors(curl_easy_strerror(result));
+		std::cout << errors.toStdString() << std::endl;
+		return result;
+	}
 
 	curl_easy_cleanup( myHandle );
 
