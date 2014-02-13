@@ -33,7 +33,7 @@ void readEntry(QXmlStreamReader &xml) {
 
 			if (!text.trimmed().isEmpty()) {
 				std::cout << "title : " 
-					<< text.toStdString() ;
+					<< text.toStdString() << std::endl;
 			}
 		}
 
@@ -47,20 +47,32 @@ void readEntry(QXmlStreamReader &xml) {
 			QString text = xml.text().toString();
 
 			if (!text.trimmed().isEmpty()) {
-				std::cout << " content : " 
-					<< text.toStdString() ;
+				std::cout << "content : " 
+					<< text.toStdString() << std::endl ;
 			}
 		}
 
 		if (xml.name() == "link") {
-			QString url = attributes.value("href").toString();
+			QString url  = attributes.value("href").toString();
+			QString rel  = attributes.value("rel").toString();
+			QString type = attributes.value("type").toString();
+
+			if (!rel.isEmpty()) {
+				if (rel == "http://opds-spec.org/cover") 
+					printf("cover : ");
+				if (rel == "http://opds-spec.org/thumbnail") 
+					printf("thumb : ");
+				if (rel == "http://opds-spec.org/acquisition") 
+					printf("get   : ");
+			}
 
 			if (!url.isEmpty()) {
 				std::cout
-					<< " url : " 
-					<< url.toStdString() ;
+					<< url.toStdString() << std::endl;
 			}
-			std::cout << std::endl;
+			if (!type.isEmpty()) {
+				std::cout << "type  : " << type.toStdString() << std::endl;
+			}
 		}
 	}
 
@@ -77,7 +89,7 @@ int main()
 	// Notice the lack of major error checking, for brevity
 
 	//curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds");
-	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/navcatalog/4e736572696573");
+	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/category/736572696573/49333a736572696573");
 
 	curl_easy_setopt(myHandle, CURLOPT_WRITEFUNCTION, readData);
 
