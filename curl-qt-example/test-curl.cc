@@ -15,14 +15,56 @@ size_t readData( char *ptr, size_t size, size_t nmemb, void *userdata) {
 	return size*nmemb;
 };
 
+
+void readEntry(QXmlStreamReader &xml) {
+	Q_ASSERT(xml.isStartElement() && xml.name() == "entry");
+	printf(" -- entry -- \n");
+	
+	QXmlStreamReader::TokenType tmptoken;
+	
+	//while (xml.readNextStartElement()) { 
+	
+	while ((tmptoken = xml.readNext()) && xml.name() != "entry") {
+		QXmlStreamAttributes attributes = xml.attributes();
+
+		if (xml.name() == "content" ) {
+			QString elementName = xml.name().toString();
+			xml.readNext();
+
+			if(xml.tokenType() != QXmlStreamReader::Characters) {
+				printf(" not characters \n");
+			}
+
+			QString text = xml.text().toString();
+
+			if (!text.trimmed().isEmpty()) {
+				std::cout 
+					<< text.toStdString() ;
+			}
+		}
+
+		if (xml.name() == "link") {
+			QString url = attributes.value("href").toString();
+
+			if (!url.isEmpty()) {
+				std::cout
+					<< " url " 
+					<< url.toStdString() ;
+			}
+			std::cout << std::endl;
+		}
+	}
+
+}
+
 int main()
 {
 	curl_global_init( CURL_GLOBAL_ALL );
 	CURL * myHandle;
-	
+
 	CURLcode result; // We’ll store the result of CURL’s webpage retrieval, for simple error checking.
 	myHandle = curl_easy_init ( ) ;
-	
+
 	// Notice the lack of major error checking, for brevity
 
 	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds");
@@ -30,12 +72,12 @@ int main()
 	curl_easy_setopt(myHandle, CURLOPT_WRITEFUNCTION, readData);
 
 	curl_easy_setopt(myHandle, CURLOPT_WRITEDATA, &data);
-	
+
 	result = curl_easy_perform( myHandle );
 
 
 	curl_easy_cleanup( myHandle );
-	
+
 	std::cout << data.toStdString() << std::endl;
 
 	//try to get through xml
@@ -47,53 +89,13 @@ int main()
 
 
 		while ((token = xml.readNext()) != QXmlStreamReader::Invalid) {
-
-			if (xml.name().toString() == "link") {
-				printf(" >> link \n");
-				QXmlStreamAttributes attributes = xml.attributes();
-				QString url = attributes.value("href").toString();
-				QString type = attributes.value("type").toString();
-
-				if (!url.isEmpty()) {
-
-					std::cout 	<< " url " 
-						<< url.toStdString() 
-						<< std::endl 
-						<< " type " 
-						<< type.toStdString() << std::endl;
-
-					std::cout 	<< " name "
-						<< xml.name().toString().toStdString() 
-						<< std::endl;
-				}
-				printf( " << link \n");
+			//only entry elements hold interesting data
+			if (xml.name() == "entry") { 
+				readEntry(xml);
 			}
-
-			if (xml.name().toString() == "content" ) {
-				printf(" >> content \n");
-				QString elementName = xml.name().toString();
-				xml.readNext();
-				if(xml.tokenType() != QXmlStreamReader::Characters) {
-					printf(" not characters \n");
-					return 0;
-				}
-				
-				QString text = xml.text().toString();
-				
-				if (!text.isEmpty()) {
-
-					std::cout 
-						<< "  text : " 
-						<< text.toStdString() 
-						<< " x\n   "
-						<< std::endl;
-				}
-				printf(" << content \n");
-			}
-			printf(" next \n");
 		}
 	}
-	
+
 	return 0;
 }
 
