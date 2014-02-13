@@ -15,15 +15,53 @@ size_t readData( char *ptr, size_t size, size_t nmemb, void *userdata) {
 	return size*nmemb;
 };
 
+void parseLink(QXmlStreamReader &xml) { 
+	Q_ASSERT(xml.name() == "link");
+
+	QXmlStreamAttributes attributes = xml.attributes();
+
+	QString url  = attributes.value("href").toString();
+	QString rel  = attributes.value("rel").toString();
+	QString type = attributes.value("type").toString();
+
+	if (!url.isEmpty()) {
+		if (!rel.isEmpty()) {
+			if (rel == "http://opds-spec.org/cover") 
+				printf("cover : ");
+			if (rel == "http://opds-spec.org/thumbnail") 
+				printf("thumb : ");
+			if (rel == "http://opds-spec.org/acquisition") 
+				printf("get   : ");
+			if (rel == "last")
+				printf(" <<   : ");
+			if (rel == "next")
+				printf(" >>   : ");
+			if (rel == "first")
+				printf("first : ");
+			if (rel == "previous")
+				printf("prev  : ");
+			if (rel == "start")
+				printf("start : ");
+			if (rel == "up")
+				printf(" ^^   : ");
+
+		}
+		if (rel != "search" ) {
+			std::cout
+				<< url.toStdString() << std::endl;
+			if (!type.isEmpty()) 
+				std::cout << "type  : " << type.toStdString() << std::endl;
+		}
+	}
+}
+
 
 void readEntry(QXmlStreamReader &xml) {
 	Q_ASSERT(xml.isStartElement() && xml.name() == "entry");
 	printf(" -- entry -- \n");
-	
+
 	QXmlStreamReader::TokenType tmptoken;
-	
-	//while (xml.readNextStartElement()) { 
-	
+
 	while ((tmptoken = xml.readNext()) && xml.name() != "entry") {
 		QXmlStreamAttributes attributes = xml.attributes();
 
@@ -49,31 +87,15 @@ void readEntry(QXmlStreamReader &xml) {
 			if (!text.trimmed().isEmpty()) {
 				std::cout << "content : " 
 					<< text.toStdString() << std::endl ;
+			} else {
+				std::cout << "content empty\n" ;
 			}
 		}
 
-		if (xml.name() == "link") {
-			QString url  = attributes.value("href").toString();
-			QString rel  = attributes.value("rel").toString();
-			QString type = attributes.value("type").toString();
+		if (xml.name() == "link") 
+			parseLink(xml);
 
-			if (!rel.isEmpty()) {
-				if (rel == "http://opds-spec.org/cover") 
-					printf("cover : ");
-				if (rel == "http://opds-spec.org/thumbnail") 
-					printf("thumb : ");
-				if (rel == "http://opds-spec.org/acquisition") 
-					printf("get   : ");
-			}
 
-			if (!url.isEmpty()) {
-				std::cout
-					<< url.toStdString() << std::endl;
-			}
-			if (!type.isEmpty()) {
-				std::cout << "type  : " << type.toStdString() << std::endl;
-			}
-		}
 	}
 
 }
@@ -89,7 +111,8 @@ int main()
 	// Notice the lack of major error checking, for brevity
 
 	//curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds");
-	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/category/736572696573/49333a736572696573");
+	//curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/category/736572696573/49333a736572696573");
+	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/navcatalog/4e736572696573?offset=30");
 
 	curl_easy_setopt(myHandle, CURLOPT_WRITEFUNCTION, readData);
 
@@ -108,13 +131,17 @@ int main()
 		QXmlStreamReader xml(data);
 
 		QXmlStreamReader::TokenType token;
+		QXmlStreamAttributes attributes ;
 
 
 		while ((token = xml.readNext()) != QXmlStreamReader::Invalid) {
+			attributes = xml.attributes();
 			//only entry elements hold interesting data
 			if (xml.name() == "entry") { 
 				readEntry(xml);
 			}
+			if (xml.name() == "link") 
+				parseLink(xml);
 		}
 	}
 
