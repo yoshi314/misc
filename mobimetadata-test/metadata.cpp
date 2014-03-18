@@ -35,7 +35,7 @@ int main()
     //goto pos 76
 
     testfile.seek(76);
-    printf("at position %ld\n", testfile.pos());
+    printf("at position %llu\n", testfile.pos());
 
     delete tmpchar;
 
@@ -63,34 +63,37 @@ int main()
     //1b - record flags
     //3b - record id
 
-
     for (int i=0;i<records;i++) {
         printf("record %d\n", i);
         testresult = inStream.readRawData(tmpchar,8);
         unsigned char * tmpchar2 = (unsigned char*)tmpchar;
         if (testresult == 8) {
 
+			printf(" [ ");
             for(int j = 0; j < 8; j++)
-                printf("%02x ", (unsigned char)tmpchar2[j]);
-            printf("\n");
+                printf(" %02x ", tmpchar2[j]);
+            printf(" ]\n");
 
             unsigned int offset = tmpchar2[3] | tmpchar2[0] <<24 | tmpchar2[1]<<16 | tmpchar2[2]<<8  ;   //needs a batter way to figure it out
             int flags = tmpchar2[4];
             unsigned int record_id = tmpchar2[5] << 16 | tmpchar2[6] << 8 | tmpchar2[7];
-            printf ( "offset : %0x [%d] \n", offset, offset);
-            printf ( "flags : %0x [%d] \n", flags, flags);
-            printf ( "record_id : %0x [%d] \n", record_id, record_id);
+            printf ( " -- offset : %0x [%d] \n", offset, offset);
+            printf ( " -- flags : %0x [%d] \n", flags, flags);
+            printf ( " -- record_id : %0x [%d] \n", record_id, record_id);
         }
     }
 
-    printf("at position %ld\n", testfile.pos());
+    printf("at position %lld\n", testfile.pos());
 
     printf("jumping the 2 byte gap to actual data\n");
     testfile.seek(testfile.pos() + 2);
-    printf("at position %ld\n", testfile.pos());
+    printf("at position %llu\n", testfile.pos());
 
 
     //go through palmdocheader ; 16 bytes
+	delete tmpchar;
+
+    tmpchar = new char[16];
 
     //go through MOBI header
 
