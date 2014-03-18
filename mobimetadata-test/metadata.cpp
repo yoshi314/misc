@@ -117,22 +117,14 @@ int main()
             printf(" %02x ", tmpchar2[j]);
         printf(" ]\n");
 
-        unsigned int compression = bytesToInt(tmpchar,0,2);
-        unsigned int dummy = bytesToInt(tmpchar,2,2); //should be 0, according to spec
-        //unsigned int textLength = tmpchar2[4] << 24 | tmpchar2[5] << 16 | tmpchar2[6] << 8 | tmpchar2[7] ;
-        unsigned int textLength = bytesToInt(tmpchar,4,4);
-        unsigned int recordCount = bytesToInt(tmpchar,8,2);
-        unsigned int recordSize = bytesToInt(tmpchar,10,2);
-        unsigned int encryptionType = bytesToInt(tmpchar,12,2);
-        unsigned int unknown = bytesToInt(tmpchar,14,2);
-
-        printf("compression : %0x \n",compression);
-        printf("dummy       : %0x \n",dummy);
-        printf("textLength  : %0x \n",textLength);
-        printf("recCount    : %0x \n",recordCount);
-        printf("recSize     : %0x \n",recordSize);
-        printf("encType     : %0x \n",encryptionType);
-        printf("unk         : %0x \n",unknown);
+        //we don't really need this, just for verification
+        printf("compression : %0x \n",bytesToInt(tmpchar,0,2));
+        printf("dummy       : %0x (expected 0)\n",bytesToInt(tmpchar,2,2));
+        printf("textLength  : %0x \n",bytesToInt(tmpchar,4,4));
+        printf("recCount    : %0x \n",bytesToInt(tmpchar,8,2));
+        printf("recSize     : %0x (expected 0x1000)\n",bytesToInt(tmpchar,10,2));
+        printf("encType     : %0x \n",bytesToInt(tmpchar,12,2));
+        printf("unk         : %0x \n",bytesToInt(tmpchar,14,2));
     }
 
 
