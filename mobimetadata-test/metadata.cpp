@@ -154,13 +154,6 @@ int main()
     printf("mobi header size : %d [ %0x ]\n", mobiHeaderSize, mobiHeaderSize);
 
 
-    //if header size is not divisible by 4, it has to be padded to a multiple of 4
-    int exth_padding = 0;
-
-    if (mobiHeaderSize % 4 )
-        exth_padding = 4 - mobiHeaderSize % 4 ;
-
-    printf(" exth padding : %d\n", exth_padding);
 
 
     printf("EXTH should start at %llx\n", mobiHeaderSize + header0pos + 0x10);  //add 16 bytes for palmdoc header parsed previously
@@ -188,11 +181,22 @@ int main()
     if (got_exth_header) {
         printf("EXTH header exists\n");
 
+        //if EXTH header size is not divisible by 4, it has to be padded to a multiple of 4, and then actual data starts.
+        int exth_padding = 0;
+
+        if (mobiHeaderSize % 4 )
+            exth_padding = 4 - mobiHeaderSize % 4 ;
+
+        printf(" exth padding : %d\n", exth_padding);
+
+
         //go through EXTH header, if found (indicated in MOBI header)
 
         //navigating to start of EXTH
-        qint64 exth_pos = header0pos + mobiHeaderSize + exth_padding;
+        qint64 exth_pos = header0pos + mobiHeaderSize;
         testfile.seek(exth_pos);
+
+
     }
 
     return 0;
