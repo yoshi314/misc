@@ -87,7 +87,7 @@ int main()
 
     printf("jumping the 2 byte gap to actual data\n");
     testfile.seek(testfile.pos() + 2);
-    printf("at position %llu [ %0x ]\n", testfile.pos(), testfile.pos());
+    printf("at position %llu [ %llx ]\n", testfile.pos(), testfile.pos());
 
 
     //go through palmdocheader ; 16 bytes
@@ -132,7 +132,7 @@ int main()
 
     //let's save the starting point, it'll be useful next
 
-    printf("at position %llu [ %0x ]\n", testfile.pos(), testfile.pos());
+    printf("at position %llu [ %llx ]\n", testfile.pos(), testfile.pos());
     //first let's see if we have a header, 4 bytes should be 'MOBI', 16 bytes from beginning for PalmDoc header
 
     delete tmpchar;
@@ -151,8 +151,19 @@ int main()
         mobiHeaderSize = tmpchar2[3] | tmpchar2[0] <<24 | tmpchar2[1]<<16 | tmpchar2[2]<<8 ;
     }
 
-    printf("mobi header size : %d [ %0x ]\n", mobiHeaderSize);
-    printf("EXTH should start at %0x\n", mobiHeaderSize + header0pos + 0x10);  //add 16 bytes for palmdoc header parsed previously
+    printf("mobi header size : %d [ %0x ]\n", mobiHeaderSize, mobiHeaderSize);
+
+
+    //if header size is not divisible by 4, it has to be padded to a multiple of 4
+    int exth_padding = 0;
+
+    if (mobiHeaderSize % 4 )
+        exth_padding = 4 - mobiHeaderSize % 4 ;
+
+    printf(" exth padding : %d\n", exth_padding);
+
+
+    printf("EXTH should start at %llx\n", mobiHeaderSize + header0pos + 0x10);  //add 16 bytes for palmdoc header parsed previously
 
     //check if EXTH record exists
 
@@ -174,10 +185,15 @@ int main()
             got_exth_header = true;
     }
 
-    if (got_exth_header)
+    if (got_exth_header) {
         printf("EXTH header exists\n");
 
-    //go through EXTH header, if found (indicated in MOBI header)
+        //go through EXTH header, if found (indicated in MOBI header)
+
+        //navigating to start of EXTH
+        qint64 exth_pos = header0pos + mobiHeaderSize + exth_padding;
+        testfile.seek(exth_pos);
+    }
 
     return 0;
 }
