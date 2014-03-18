@@ -87,17 +87,21 @@ int main()
 
     printf("jumping the 2 byte gap to actual data\n");
     testfile.seek(testfile.pos() + 2);
-    printf("at position %llu\n", testfile.pos());
+    printf("at position %llu [ %0x ]\n", testfile.pos(), testfile.pos());
 
 
     //go through palmdocheader ; 16 bytes
 	delete tmpchar;
+
+	//save this location as reference for later
+    qint64 header0pos = testfile.pos();
 
     tmpchar = new char[16];
     testresult = inStream.readRawData(tmpchar,16);
 
     if (testresult == 16) {
         unsigned char * tmpchar2 = (unsigned char*)tmpchar;
+        printf(" [ ");
         for(int j = 0; j < 16; j++)
             printf(" %02x ", tmpchar2[j]);
         printf(" ]\n");
@@ -119,9 +123,59 @@ int main()
         printf("unk         : %0x \n",unknown);
     }
 
-    printf("parsing record 0\n");
+
 
     //go through MOBI header
+
+
+    printf("parsing record 0\n");
+
+    //let's save the starting point, it'll be useful next
+
+    printf("at position %llu [ %0x ]\n", testfile.pos(), testfile.pos());
+    //first let's see if we have a header, 4 bytes should be 'MOBI', 16 bytes from beginning for PalmDoc header
+
+    delete tmpchar;
+    tmpchar = new char[4];
+    testresult = inStream.readRawData(tmpchar,4);
+
+    if ((testresult == 4) && (strncmp(tmpchar,"MOBI",4) == 0))
+        printf("got MOBI header in record 0\n");
+
+    //next up is header length that includes that 'MOBI' signature just read.
+    testresult = inStream.readRawData(tmpchar,4);
+    unsigned int mobiHeaderSize  = 0;
+
+    if (testresult == 4) {
+        unsigned char * tmpchar2 = (unsigned char*) tmpchar;
+        mobiHeaderSize = tmpchar2[3] | tmpchar2[0] <<24 | tmpchar2[1]<<16 | tmpchar2[2]<<8 ;
+    }
+
+    printf("mobi header size : %d [ %0x ]\n", mobiHeaderSize);
+    printf("EXTH should start at %0x\n", mobiHeaderSize + header0pos + 0x10);  //add 16 bytes for palmdoc header parsed previously
+
+    //check if EXTH record exists
+
+    testfile.seek(header0pos + 0x80) ; //location of EXTH flags in header;
+    bool got_exth_header = false;
+
+    if (inStream.readRawData(tmpchar,4) == 4)
+    {
+        unsigned char * tmpchar2 = (unsigned char*) tmpchar;
+
+        printf(" EXTH flags : [ ");
+        for(int j = 0; j < 4; j++)
+            printf(" %02x ", tmpchar2[j]);
+        printf(" ]\n");
+
+        unsigned int exth_flags = tmpchar2[3] | tmpchar2[0] <<24 | tmpchar2[1]<<16 | tmpchar2[2]<<8 ;
+
+        if ( exth_flags & 0x40)
+            got_exth_header = true;
+    }
+
+    if (got_exth_header)
+        printf("EXTH header exists\n");
 
     //go through EXTH header, if found (indicated in MOBI header)
 
