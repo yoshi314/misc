@@ -108,8 +108,6 @@ int main()
 	CURLcode result; // We’ll store the result of CURL’s webpage retrieval, for simple error checking.
 	myHandle = curl_easy_init ( ) ;
 
-	// Notice the lack of major error checking, for brevity
-
 	//curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds");
 	//curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/category/736572696573/49333a736572696573");
 	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/navcatalog/4e736572696573?offset=30");
