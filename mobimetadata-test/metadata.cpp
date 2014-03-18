@@ -4,6 +4,17 @@
 #include <Qt/qiodevice.h>
 
 
+//attempt to convert sequence of bytes into integer
+unsigned int bytesToInt(char * bytes, int start, int count) {
+    unsigned char * tmpchars = (unsigned char *) bytes;
+    unsigned int value = 0;
+    for (int j=0;j<count;j++) {
+        value = (value << 8) + tmpchars[start+j];
+    }
+    return value;
+}
+
+
 int main()
 {
     QFile testfile("test.mobi");
@@ -74,7 +85,7 @@ int main()
                 printf(" %02x ", tmpchar2[j]);
             printf(" ]\n");
 
-            unsigned int offset = tmpchar2[3] | tmpchar2[0] <<24 | tmpchar2[1]<<16 | tmpchar2[2]<<8  ;   //needs a batter way to figure it out
+            unsigned int offset = bytesToInt(tmpchar,0,4)  ;   //needs a batter way to figure it out
             int flags = tmpchar2[4];
             unsigned int record_id = tmpchar2[5] << 16 | tmpchar2[6] << 8 | tmpchar2[7];
             printf ( " -- offset : %0x [%d] \n", offset, offset);
@@ -106,13 +117,14 @@ int main()
             printf(" %02x ", tmpchar2[j]);
         printf(" ]\n");
 
-        unsigned int compression = tmpchar2[0] << 8 | tmpchar2[1];
-        int dummy = tmpchar2[2] << 8 | tmpchar2[3]; //should be 0, according to spec
-        unsigned int textLength = tmpchar2[4] << 24 | tmpchar2[5] << 16 | tmpchar2[6] << 8 | tmpchar2[7] ;
-        unsigned int recordCount = tmpchar2[8] << 8 | tmpchar2 [9];
-        unsigned int recordSize = tmpchar2[10] << 8 | tmpchar2[11];
-        unsigned int encryptionType = tmpchar2[12] << 8 | tmpchar2[13];
-        unsigned int unknown = tmpchar2[14] << 8 | tmpchar2[15];
+        unsigned int compression = bytesToInt(tmpchar,0,2);
+        unsigned int dummy = bytesToInt(tmpchar,2,2); //should be 0, according to spec
+        //unsigned int textLength = tmpchar2[4] << 24 | tmpchar2[5] << 16 | tmpchar2[6] << 8 | tmpchar2[7] ;
+        unsigned int textLength = bytesToInt(tmpchar,4,4);
+        unsigned int recordCount = bytesToInt(tmpchar,8,2);
+        unsigned int recordSize = bytesToInt(tmpchar,10,2);
+        unsigned int encryptionType = bytesToInt(tmpchar,12,2);
+        unsigned int unknown = bytesToInt(tmpchar,14,2);
 
         printf("compression : %0x \n",compression);
         printf("dummy       : %0x \n",dummy);
@@ -147,14 +159,10 @@ int main()
     unsigned int mobiHeaderSize  = 0;
 
     if (testresult == 4) {
-        unsigned char * tmpchar2 = (unsigned char*) tmpchar;
-        mobiHeaderSize = tmpchar2[3] | tmpchar2[0] <<24 | tmpchar2[1]<<16 | tmpchar2[2]<<8 ;
+        mobiHeaderSize = bytesToInt(tmpchar,0,4);
     }
 
     printf("mobi header size : %d [ %0x ]\n", mobiHeaderSize, mobiHeaderSize);
-
-
-
 
     printf("EXTH should start at %llx\n", mobiHeaderSize + header0pos + 0x10);  //add 16 bytes for palmdoc header parsed previously
 
@@ -172,7 +180,7 @@ int main()
             printf(" %02x ", tmpchar2[j]);
         printf(" ]\n");
 
-        unsigned int exth_flags = tmpchar2[3] | tmpchar2[0] <<24 | tmpchar2[1]<<16 | tmpchar2[2]<<8 ;
+        unsigned int exth_flags = bytesToInt(tmpchar,0,4);
 
         if ( exth_flags & 0x40)
             got_exth_header = true;
