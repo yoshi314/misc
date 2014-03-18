@@ -14,6 +14,16 @@ unsigned int bytesToInt(char * bytes, int start, int count) {
     return value;
 }
 
+//print hex bytes of a char *
+void printbytes(char * input, int count) {
+        unsigned char * tmpchar2 = (unsigned char*) input;
+
+        printf(" [ ");
+        for(int j = 0; j < count; j++)
+            printf(" %02x ", tmpchar2[j]);
+        printf(" ]\n");
+}
+
 
 int main()
 {
@@ -127,10 +137,7 @@ int main()
         printf("unk         : %0x \n",bytesToInt(tmpchar,14,2));
     }
 
-
-
     //go through MOBI header
-
 
     printf("parsing record 0\n");
 
@@ -178,27 +185,89 @@ int main()
             got_exth_header = true;
     }
 
-    if (got_exth_header) {
-        printf("EXTH header exists\n");
-
-        //if EXTH header size is not divisible by 4, it has to be padded to a multiple of 4, and then actual data starts.
-        int exth_padding = 0;
-
-        if (mobiHeaderSize % 4 )
-            exth_padding = 4 - mobiHeaderSize % 4 ;
-
-        printf(" exth padding : %d\n", exth_padding);
-
-
-        //go through EXTH header, if found (indicated in MOBI header)
-
-        //navigating to start of EXTH
-        qint64 exth_pos = header0pos + mobiHeaderSize;
-        testfile.seek(exth_pos);
-
-
+    if (!got_exth_header) {
+        printf("EXTH not found, exiting\n");
+        return 0;
     }
 
+    printf("EXTH header exists\n");
+
+    //if EXTH header size is not divisible by 4, it has to be padded to a multiple of 4, and then actual data starts.
+    int exth_padding = 0;
+
+    if (mobiHeaderSize % 4 )
+        exth_padding = 4 - mobiHeaderSize % 4 ;
+
+    printf(" exth padding : %d\n", exth_padding);
+
+
+    //go through EXTH header, if found (indicated in MOBI header)
+
+    //navigating to start of EXTH
+    printf("seeking to exth header\n");
+    qint64 exth_pos = header0pos + mobiHeaderSize+0x10;  //first palmdoc entry offset + 16bytes + entire mobi header is where exth starts
+    testfile.seek(exth_pos);
+
+    printf("at position %llu [ %llx ]\n", testfile.pos(), testfile.pos());
+    /*
+    'EXTH'
+    4 bytes - length of entire header
+    4 bytes - number of records
+
+    < records follow >
+    record {
+        4 bytes      type
+        4 bytes      length of entire record (that is, including 8 bytes for type and length)
+        8 - length   actual record data
+    }
+
+    0-3 bytes padding (in exth_padding)
+    */
+
+    delete tmpchar;
+    tmpchar = new char [12];
+
+
+    printf("reading 12 bytes\n");
+    if (inStream.readRawData(tmpchar,12) == 12) {
+        printbytes(tmpchar,12);
+        if (strncpy(tmpchar,"EXTH",4) == 0)
+            printf("got EXTH header\n");
+        unsigned int headerlength = bytesToInt(tmpchar,4,4);
+        unsigned int exthRecords = bytesToInt(tmpchar,8,4);
+
+        printf("header is %x long \n", headerlength);
+        printf("there are %x records \n",exthRecords);
+
+        //go through the EXTH records
+        for (unsigned int j=0;j<exthRecords;j++) {
+            char * tmprecord = new char [8];
+            if (inStream.readRawData(tmprecord,8) ==8 ) {
+                printf("record %d/%d\n",j,exthRecords);
+                unsigned int recType = bytesToInt(tmprecord,0,4);
+                printf(" type   : %d\n",recType);
+                unsigned int recLength = bytesToInt(tmprecord,4,4);
+                printf(" length : %0x\n", recLength);
+
+                char * recordData = new char[(int)recLength - 8];
+                if (inStream.readRawData(recordData,(int)recLength - 8) == (int)recLength -8) {
+                    printf(" data : %s\n", recordData);
+                }
+
+                switch (recType) {
+                case 100:
+                    printf("author : %s \n", recordData);
+                    break;
+                case 503:
+                    printf("title : %s \n", recordData);
+                    break;
+                default:
+                    break;
+                }
+            }
+            delete tmprecord;
+        }
+    }
     return 0;
 }
 
