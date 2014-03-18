@@ -94,6 +94,32 @@ int main()
 	delete tmpchar;
 
     tmpchar = new char[16];
+    testresult = inStream.readRawData(tmpchar,16);
+
+    if (testresult == 16) {
+        unsigned char * tmpchar2 = (unsigned char*)tmpchar;
+        for(int j = 0; j < 16; j++)
+            printf(" %02x ", tmpchar2[j]);
+        printf(" ]\n");
+
+        unsigned int compression = tmpchar2[0] << 8 | tmpchar2[1];
+        int dummy = tmpchar2[2] << 8 | tmpchar2[3]; //should be 0, according to spec
+        unsigned int textLength = tmpchar2[4] << 24 | tmpchar2[5] << 16 | tmpchar2[6] << 8 | tmpchar2[7] ;
+        unsigned int recordCount = tmpchar2[8] << 8 | tmpchar2 [9];
+        unsigned int recordSize = tmpchar2[10] << 8 | tmpchar2[11];
+        unsigned int encryptionType = tmpchar2[12] << 8 | tmpchar2[13];
+        unsigned int unknown = tmpchar2[14] << 8 | tmpchar2[15];
+
+        printf("compression : %0x \n",compression);
+        printf("dummy       : %0x \n",dummy);
+        printf("textLength  : %0x \n",textLength);
+        printf("recCount    : %0x \n",recordCount);
+        printf("recSize     : %0x \n",recordSize);
+        printf("encType     : %0x \n",encryptionType);
+        printf("unk         : %0x \n",unknown);
+    }
+
+    printf("parsing record 0\n");
 
     //go through MOBI header
 
