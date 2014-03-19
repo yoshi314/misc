@@ -100,7 +100,7 @@ void readEntry(QXmlStreamReader &xml) {
 
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	curl_global_init( CURL_GLOBAL_ALL );
 	CURL * myHandle;
@@ -108,9 +108,13 @@ int main()
 	CURLcode result; // We’ll store the result of CURL’s webpage retrieval, for simple error checking.
 	myHandle = curl_easy_init ( ) ;
 
-	//curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds");
-	//curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/category/736572696573/49333a736572696573");
-	curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds/navcatalog/4e736572696573?offset=30");
+	if (argc > 1) {
+		printf("got argc > 0\n");
+		printf("argc : %d , argv1 : %s\n",argc, argv[1]);
+		curl_easy_setopt(myHandle, CURLOPT_URL, argv[1]);
+	} else {
+		curl_easy_setopt(myHandle, CURLOPT_URL, "http://localhost:8080/opds");
+	}
 
 	curl_easy_setopt(myHandle, CURLOPT_WRITEFUNCTION, readData);
 
