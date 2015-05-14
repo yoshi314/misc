@@ -1,6 +1,6 @@
 Title:          openttd.tcz
 Description:	openTTD is a reimplenetation of transport tycoon deluxe
-Version:        1.2.3
+Version:        1.5.0
 Author:         openTTD Team
 Original-site:  http://openttd.org
 Copying-policy: GPL v2
@@ -26,4 +26,5 @@ X server with 2D acceleration is recommended, but probably not required.
                 Compiled for TC 4.x
                 ----
 Change-log:     2013/01/02 Version 1.2.3
-Current:        2013/01/02 Version 1.2.3
+		2015/05/14 Version 1.5.0
+Current:        2015/05/14 Version 1.5.0

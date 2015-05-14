@@ -23,6 +23,7 @@ wget -c http://binaries.openttd.org/extra/opengfx/${gfxver}/opengfx-${gfxver}-al
 mkdir openttd
 
 unzip opengfx-${gfxver}-all.zip
+tar xvf opengfx-${gfxver}.tar
 
 tar xzf openttd-${version}-source.tar.gz
 
