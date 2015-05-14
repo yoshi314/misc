@@ -3,10 +3,10 @@
 builddir=${PWD}
 
 #required
-#lzo2-dev
-#xz-dev
+#liblzma-dev
+#lzo-dev
 #SDL-dev
-#SDL_gfx-dev
+
 
 rm versions.txt
 wget http://finger.openttd.org/versions.txt
