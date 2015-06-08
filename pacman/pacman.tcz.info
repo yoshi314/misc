@@ -1,0 +1,19 @@
+Title:          pacman.tcz
+Description:    pacman is an archlinux package manager
+Version:        4.2.1
+Author:         Archlinux development team
+Original-site:  http://archlinux.org
+Copying-policy: GPL v2
+Size:		600K
+Extension_by:   yoshi314 <yoshi314@gmail.com>
+Tags:		pacman package manager arch
+Comments:       Pacman is a package manager for arch linux. 
+
+Relatively simple, yet with enough features to be comfortable
+
+                ----
+                Compiled for TC 6.x
+                ----
+PPI Compatible
+Change-log:     2015/06/08 First build
+Current:        2015/06/08 First build

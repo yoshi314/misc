@@ -1,0 +1,6 @@
+compiletc
+automake
+gettext
+libtool-dev
+libarchive-dev
+curl-dev

@@ -20,7 +20,8 @@ builddir=${PWD}
 _fmodver=42636
 _fmodarch=linux
 
-wget -c http://www.fmod.org/index.php/release/version/fmodapi${_fmodver}${_fmodarch}.tar.gz
+#wget -c http://www.fmod.org/index.php/release/version/fmodapi${_fmodver}${_fmodarch}.tar.gz
+wget -c http://www.fmod.org/download/fmodex/api/Linux/fmodapi${_fmodver}${_fmodarch}.tar.gz
 
 tar xvxf fmodapi${_fmodver}${_fmodarch}.tar.gz
 
@@ -28,9 +29,9 @@ _fmodlibver=${_fmodver:0:1}.${_fmodver:1:2}.${_fmodver:3:2}
 _fmodlibname=libfmodex
 
 
-[ ! -d zdoom ] && svn co http://mancubus.net/svn/hosted/zdoom/zdoom/trunk zdoom
+[ ! -d zdoom ] && git clone https://github.com/rheit/zdoom.git zdoom
 
-svn up zdoom
+cd zdoom && git pull
 
 cp fmodapi${_fmodver}${_fmodarch}/api/lib/${_fmodlibname}-${_fmodlibver}.so zdoom/libfmodex.so
 
