@@ -1,20 +1,6 @@
 #!/bin/sh
 
-
-if [ $# -lt 1 ] ; then 
-	echo "$0 <squashfs>"
-	exit 1
-fi
-
-
-squashfile=$1
-
-tempdir=$(mktemp -d)
-
-
-mount -o loop -t auto $squashfile $tempdir
-
-
+# config
 #
 # work dirs
 #
@@ -23,25 +9,35 @@ sqfs=/dev/shm/portage
 mkdir -p ${sqfs}
 mkdir -p ${sqfs}-work
 
-tempmount=/mnt/storage/ovfs
+tempmount=/data/build/ovfs
+# place where the sqfs files are
+location=/data/build
+
+# /config
 
 mkdir ${tempmount}
 
+squashfile=${1:-${location}/portage-prev.sqfs}
 
+# in case location was overwritten
+# re-assign it
+location=$(dirname ${squashfile})
+
+
+[ ! -e "${squashfile}" ] && exit 0
+
+tempdir=$(mktemp -d)
+
+mount -o loop -t auto $squashfile $tempdir
 
 # check for recent archives
 
 #
 # if there is an archive from last 30 minutes, don't sync again
 #
-where=$(dirname $0)
-
-howmany=$(find $where -maxdepth 1 -name "portage*.sqfs" -type f -mmin -30 | wc -l)
+howmany=$(find $location -maxdepth 1 -name "portage*.sqfs" -type f -mmin -30 | wc -l)
 
 [ "$howmany" -gt 0 ] && exit 0
-
-
-
 
 #overlayfs
 #
@@ -57,16 +53,16 @@ mount -t overlay overlay -olowerdir=${tempdir},upperdir=/dev/shm/portage,workdir
 # rsync that shit
 #
 
-rsync --stats --times --omit-dir-times --compress --whole-file -avr --delete-during --exclude="*ChangeLog" rsync://rsync.pl.gentoo.org/gentoo-portage/ ${tempmount}/
-#rsync --stats --times --omit-dir-times --compress --whole-file -avr --delete-during --exclude="*ChangeLog" rsync://rsync.pl.gentoo.org/gentoo-portage/ ${tempmount}/
+rsync --stats --times --omit-dir-times --compress --whole-file -avr --delete-during  rsync://rsync.pl.gentoo.org/gentoo-portage/ ${tempmount}/
+#rsync --stats --times --omit-dir-times --compress --whole-file -avr --delete-during rsync://rsync.pl.gentoo.org/gentoo-portage/ ${tempmount}/
 
 #
 # pack that shit
 #
 
 date=$(date +%F-%H-%M-%S)
-#mksquashfs ${tempmount} /mnt/storage/portage-${date}.sqfs -comp lz4 -Xhc -progress
-mksquashfs ${tempmount} /mnt/storage/portage-${date}.sqfs -comp xz -progress
+#mksquashfs ${tempmount} ${location}/portage-${date}.sqfs -comp lz4 -Xhc -progress
+mksquashfs ${tempmount} ${location}/portage-${date}.sqfs -comp xz -progress
 
 #
 # clean up that shit
@@ -81,9 +77,10 @@ rm -rf ${tempmount}
 
 #
 # most recent file linked as portage-latest.sqfs
-#
+# last good file as portage-prev.sqfs
+# 
 
-cd /mnt/storage
+cd ${location}
 mv portage-latest.sqfs portage-prev.sqfs
 ln -sf portage-${date}.sqfs portage-latest.sqfs
 mount /usr/portage
@@ -92,6 +89,11 @@ mount /usr/portage
 # clean up old sqfs files from 7+ days
 #
 
+find ${location} -maxdepth 1 -name "portage*sqfs" -mtime +7 -delete
 
-find /mnt/storage -maxdepth 1 -name "portage*sqfs" -mtime +7 -delete
+
+# this is gentoo specific, remove if needed
+mv /var/cache/eix/portage.eix /var/cache/eix/portage.eix.old
+eix-update
+eix-diff /var/cache/eix/portage.eix.old /var/cache/eix/portage.eix
 
