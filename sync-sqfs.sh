@@ -2,42 +2,41 @@
 
 # config
 #
-# work dirs
-#
 
 sqfs=/dev/shm/portage
 mkdir -p ${sqfs}
 mkdir -p ${sqfs}-work
 
-tempmount=/data/build/ovfs
 # place where the sqfs files are
 location=/data/build
+tempmount=${location}/ovfs
 
 # /config
 
 mkdir ${tempmount}
 
-squashfile=${1:-${location}/portage-prev.sqfs}
+squashfile=${1:-$(ls -1t ${location}/portage-20* | head -1)}
 
 # in case location was overwritten
 # re-assign it
 location=$(dirname ${squashfile})
 
 
-[ ! -e "${squashfile}" ] && exit 0
-
-tempdir=$(mktemp -d)
-
-mount -o loop -t auto $squashfile $tempdir
+[ ! -e "${squashfile}" ] && cleanup
 
 # check for recent archives
-
 #
 # if there is an archive from last 30 minutes, don't sync again
 #
+
 howmany=$(find $location -maxdepth 1 -name "portage*.sqfs" -type f -mmin -30 | wc -l)
 
 [ "$howmany" -gt 0 ] && exit 0
+
+
+
+tempdir=$(mktemp -d)
+mount -o loop -t auto $squashfile $tempdir
 
 #overlayfs
 #
@@ -53,8 +52,11 @@ mount -t overlay overlay -olowerdir=${tempdir},upperdir=/dev/shm/portage,workdir
 # rsync that shit
 #
 
-rsync --stats --times --omit-dir-times --compress --whole-file -avr --delete-during  rsync://rsync.pl.gentoo.org/gentoo-portage/ ${tempmount}/
-#rsync --stats --times --omit-dir-times --compress --whole-file -avr --delete-during rsync://rsync.pl.gentoo.org/gentoo-portage/ ${tempmount}/
+rsync --stats --times --omit-dir-times --compress --whole-file -avr --delete-during --exclude="*ChangeLog" rsync://rsync.pl.gentoo.org/gentoo-portage/ ${tempmount}/
+
+find ${tempmount} -name "ChangeLog" -delete
+
+#rsync --stats --times --omit-dir-times --compress --whole-file -avr --delete-during --exclude="*ChangeLog" rsync://rsync.pl.gentoo.org/gentoo-portage/ ${tempmount}/
 
 #
 # pack that shit
@@ -81,7 +83,8 @@ rm -rf ${tempmount}
 # 
 
 cd ${location}
-mv portage-latest.sqfs portage-prev.sqfs
+#mv portage-latest.sqfs portage-prev.sqfs
+ln -sf ${squashfile}  portage-prev.sqfs
 ln -sf portage-${date}.sqfs portage-latest.sqfs
 mount /usr/portage
 
