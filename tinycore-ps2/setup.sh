@@ -11,21 +11,26 @@
  cd ~/opl
  git pull
 
- rev=$(git describe --tags)
- echo "building OPL rev $rev"
+
+ if git describe --tags ; then
+     rev=$(git describe --tags)
+    echo "building OPL rev $rev"
+ else
+     rev=""
+     echo "building OPL"
+ fi
+
  make rebuild
 
  if [ -f OPNPS2LD.ELF ] ; then
- 	echo "OPL rev $rev built succesfully"
+ 	echo "OPL $rev built succesfully"
  	oplrev=$rev
  fi
 
  if [ -f opl.elf ] ; then
-     echo "OPL rev $rev (unpacked) built successfully"
+     echo "OPL $rev (unpacked) built successfully"
      oplrev=$rev
  fi
- 
- [ -n "$oplrev" ] &&  echo "built OPL ............ rev $oplrev ( in ~/opl )" 
  
  echo "in order to copy files to USB device run ./upload.sh command"
  

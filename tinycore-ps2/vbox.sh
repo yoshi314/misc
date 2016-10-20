@@ -3,6 +3,14 @@ echo "this script will copy your OPL build to the VirtualBox share"
 
 echo "attempting to access your virtualbox share"
 
+
+cd ~/opl
+if git describe --tags > /dev/null ; then
+    rev=$(git describe --tags)
+else
+    rev=""
+fi
+
 if [ $# -lt 1 ]; then
 	echo "================================================================"
 	echo "error : you need to add the shared directory name as a parameter"
@@ -21,15 +29,26 @@ sudo modprobe vboxvfs
 echo "mounting shared directory $1 under /home/tc/pendrive ... "
 sudo mount.vboxsf $1 /home/tc/pendrive
 
+
+target=/home/tc/pendrive
+
+if [ -n "$rev" ] ; then
+    target="${target}/$rev"
+    mkdir -p $target
+fi
+
+
 if mount | grep pendrive ; then
 	echo "shared folder mounted successfully"
 	
 	echo "copying files ... "
-	[ -f ~/opl/OPNPS2LD.ELF ] && sudo cp opl/OPNPS2LD.ELF /home/tc/pendrive
+	[ -f ~/opl/OPNPS2LD.ELF ] && sudo cp ~/opl/OPNPS2LD.ELF ${target}
+	[ -f ~/opl/opl.elf ] && sudo cp ~/opl/opl.elf ${target}
 	echo " .. trying to unmount the shared dir"
 	sudo umount pendrive && echo " .. umount successful"
 	echo "check your shared dir for files"
 	[ -f ~/opl/OPNPS2LD.ELF ] && echo "OPL copied as OPNPS2LD.ELF"
+    [ -f ~/opl/opl.elf ] && echo "OPL (uncompressed) copied as opl.elf"
 else
 	echo "failed to write files"
 	echo "check your VM settings"

@@ -2,7 +2,11 @@
 
 
 cd ~/opl
-rev=$(git describe --tags)
+if git describe --tags > /dev/null ; then
+    rev=$(git describe --tags)
+else
+    rev=""
+fi
 
 echo "this script will copy your OPL build to the pendrive"
 
@@ -12,14 +16,20 @@ echo "attempting to access pendrive"
 sudo mount -t auto /dev/sda1 /home/tc/pendrive
 
 
-echo "files will be in $rev directory"
-sudo mkdir /home/tc/pendrive/$rev
+
+if [ -n "$rev" ] ; then
+    echo "files will be in $rev directory"
+    target=/home/tc/pendrive/$rev
+    sudo mkdir -p $target
+else
+    target=/home/tc/pendrive
+fi
 
 if mount | grep pendrive ; then
 	echo "pendrive mounted successfully"
 	echo "copying files ... "
-	[ -f ~/opl/OPNPS2LD.ELF ] && sudo cp  opl/OPNPS2LD.ELF /home/tc/pendrive/$rev
-	[ -f ~/opl/opl.elf ] && sudo cp  opl/opl.elf /home/tc/pendrive/$rev
+	[ -f ~/opl/OPNPS2LD.ELF ] && sudo cp ~opl/OPNPS2LD.ELF $target
+	[ -f ~/opl/opl.elf ] && sudo cp  ~/opl/opl.elf $target
 	echo " .. trying to unmount the pendrive"
 	sudo umount /dev/sda1 && echo " .. umount successful"
 	[ -f ~/opl/OPNPS2LD.ELF ] && echo "OPL copied as OPNPS2LD.ELF"
