@@ -20,8 +20,9 @@ echo "unpacking"
 unzip master.zip 
 
 
-# rm master.zip
-ln -sf Open-PS2-Loader-master opl
+rm master.zip
+rm opl
+ln -s Open-PS2-Loader-master opl
 
 
 echo "all ready now, hopefully"
