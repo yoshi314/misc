@@ -42,13 +42,11 @@ if mount | grep pendrive ; then
 	echo "shared folder mounted successfully"
 	
 	echo "copying files ... "
-	[ -f ~/opl/OPNPS2LD.ELF ] && sudo cp ~/opl/OPNPS2LD.ELF ${target}
-	[ -f ~/opl/opl.elf ] && sudo cp ~/opl/opl.elf ${target}
+    cp -v ~/opl/*.elf $target/
+    cp -v ~/opl/*.ELF $target/
 	echo " .. trying to unmount the shared dir"
 	sudo umount pendrive && echo " .. umount successful"
 	echo "check your shared dir for files"
-	[ -f ~/opl/OPNPS2LD.ELF ] && echo "OPL copied as OPNPS2LD.ELF"
-    [ -f ~/opl/opl.elf ] && echo "OPL (uncompressed) copied as opl.elf"
 else
 	echo "failed to write files"
 	echo "check your VM settings"

@@ -29,7 +29,7 @@ echo "* smap *"
 cd ps2eth
 make >> ~/build.log || die "failed to build smap driver"
 mkdir -p ${PS2DEV}/ps2eth/smap-new
-cp smap-new/ps2smap.irx ${PS2DEV}/ps2eth/smap-new
+cp smap/ps2smap.irx ${PS2DEV}/ps2eth/smap
 
 echo "* gsKit *"
 cd "${thisdir}/gsKit"
