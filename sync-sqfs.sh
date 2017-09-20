@@ -17,14 +17,19 @@ location=/data/build
 
 mkdir ${tempmount}
 
-squashfile=${1:-${location}/portage-prev.sqfs}
+squashfile=${1:-${location}/portage-latest.sqfs}
 
+
+# if there is no sqfs file, quit for now.
+# todo, maybe make a new file from scratch if not found
+
+[ -e "${squashfile}" ] || exit 0 
 # in case location was overwritten
 # re-assign it
 location=$(dirname ${squashfile})
 
 
-[ ! -e "${squashfile}" ] && exit 0
+
 
 tempdir=$(mktemp -d)
 
