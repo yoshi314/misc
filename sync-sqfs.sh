@@ -17,12 +17,22 @@ mkdir ${tempmount}
 
 squashfile=${1:-$(ls -1t ${location}/portage-20* | head -1)}
 
+
+# if there is no sqfs file, quit for now.
+# todo, maybe make a new file from scratch if not found
+
+[ -e "${squashfile}" ] || exit 0 
 # in case location was overwritten
 # re-assign it
 location=$(dirname ${squashfile})
 
 
 [ ! -e "${squashfile}" ] && cleanup
+
+
+tempdir=$(mktemp -d)
+
+mount -o loop -t auto $squashfile $tempdir
 
 # check for recent archives
 #
