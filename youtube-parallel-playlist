@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+# download youtube playlist in multithreaded fashion
+
+YOUTUBE_DL=yt-dlp
+YOUTUBE_DL_ARGS="-x --audio-format mp3 --add-metadata"
+JOBS=10
+tempfile=$(mktemp)
+
+[ $# -gt 0 ] || exit 0
+url=$1
+
+echo "getting ids for the playlist"
+$YOUTUBE_DL --get-id ${url} > $tempfile
+
+parallel -j $JOBS -a $tempfile $YOUTUBE_DL $YOUTUBE_DL_ARGS
+#parallel -v -j $JOBS -a ids.txt $YOUTUBE_DL $YOUTUBE_DL_ARGS
+
+rm $tempfile
