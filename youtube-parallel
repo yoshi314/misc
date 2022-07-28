@@ -1,0 +1,10 @@
+#!/bin/bash
+
+YOUTUBE_DL=yt-dlp
+YOUTUBE_DL_ARGS="-x --audio-format mp3 --add-metadata"
+JOBS=10
+
+[ $# -gt 0 ] || exit 0
+ids="$@"
+
+parallel --bar -j $JOBS $YOUTUBE_DL $YOUTUBE_DL_ARGS ::: $ids
